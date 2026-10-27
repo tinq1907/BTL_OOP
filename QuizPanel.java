@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * Multiple-choice Quiz practice panel.
  * Prompts the user with a vocabulary term and 4 definition options (A, B, C, D).
- * Validates answers immediately, applies visual color feedback, updates Spaced Repetition,
- * and auto-transitions to the next question.
+ * Validates answers immediately, applies high-contrast visual feedback,
+ * updates Spaced Repetition, and transitions smoothly to the next question.
  */
 public class QuizPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -27,18 +27,18 @@ public class QuizPanel extends JPanel {
     private JLabel streakLabel;
     private JLabel promptLabel;
     private JLabel feedbackLabel;
-    private JButton[] optionButtons;
+    private QuizOptionButton[] optionButtons;
     private JPanel optionsPanel;
     private JPanel contentCard;
     private JPanel warningPanel;
     private Timer transitionTimer;
+    private boolean isAnsweringAllowed = true;
 
     // Colors
-    private static final Color COLOR_DEFAULT_BTN = new Color(248, 250, 252);
-    private static final Color COLOR_DEFAULT_BORDER = new Color(203, 213, 225);
-    private static final Color COLOR_CORRECT = new Color(34, 197, 94); // Vibrant Green
-    private static final Color COLOR_INCORRECT = new Color(239, 68, 68); // Vibrant Red
-    private static final Color COLOR_TEXT_DARK = new Color(30, 41, 59);
+    private static final Color COLOR_TEXT_DARK = new Color(33, 37, 41);   // #212529
+    private static final Color COLOR_DEFAULT_BTN = new Color(248, 249, 250); // #F8F9FA
+    private static final Color COLOR_CORRECT = new Color(25, 135, 84);    // #198754 Solid Green
+    private static final Color COLOR_INCORRECT = new Color(220, 53, 69);  // #DC3545 Solid Red
 
     public QuizPanel(FlashcardManager manager) {
         this.manager = manager;
@@ -63,13 +63,13 @@ public class QuizPanel extends JPanel {
         JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         statsPanel.setOpaque(false);
 
-        streakLabel = new JLabel("Streak: 0 🔥");
+        streakLabel = new JLabel("Streak: 0");
         streakLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        streakLabel.setForeground(new Color(234, 88, 12));
+        streakLabel.setForeground(new Color(217, 119, 6));
 
         scoreLabel = new JLabel("Score: 0 / 0 (0%)");
         scoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        scoreLabel.setForeground(new Color(79, 70, 229));
+        scoreLabel.setForeground(new Color(13, 110, 253));
 
         statsPanel.add(streakLabel);
         statsPanel.add(scoreLabel);
@@ -80,6 +80,8 @@ public class QuizPanel extends JPanel {
 
         // --- Center: Quiz Card Container ---
         contentCard = new JPanel(new BorderLayout(20, 20)) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -88,7 +90,7 @@ public class QuizPanel extends JPanel {
                 g2.fillRoundRect(6, 6, getWidth() - 12, getHeight() - 12, 20, 20);
                 g2.setColor(Color.WHITE);
                 g2.fillRoundRect(3, 3, getWidth() - 12, getHeight() - 12, 20, 20);
-                g2.setColor(new Color(226, 232, 240));
+                g2.setColor(new Color(222, 226, 230));
                 g2.drawRoundRect(3, 3, getWidth() - 12, getHeight() - 12, 20, 20);
                 g2.dispose();
                 super.paintComponent(g);
@@ -97,19 +99,19 @@ public class QuizPanel extends JPanel {
         contentCard.setOpaque(false);
         contentCard.setBorder(new EmptyBorder(30, 40, 25, 40));
 
-        // Prompt (Question Word)
+        // Prompt Word
         JPanel promptContainer = new JPanel();
         promptContainer.setLayout(new BoxLayout(promptContainer, BoxLayout.Y_AXIS));
         promptContainer.setOpaque(false);
 
         JLabel questionHeader = new JLabel("What is the correct definition for:");
         questionHeader.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        questionHeader.setForeground(new Color(100, 116, 139));
+        questionHeader.setForeground(new Color(108, 117, 125));
         questionHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         promptLabel = new JLabel("Vocabulary Word", SwingConstants.CENTER);
-        promptLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        promptLabel.setForeground(new Color(15, 23, 42));
+        promptLabel.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        promptLabel.setForeground(COLOR_TEXT_DARK);
         promptLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         promptContainer.add(questionHeader);
@@ -120,49 +122,39 @@ public class QuizPanel extends JPanel {
         // 4 Options Grid (2x2 layout)
         optionsPanel = new JPanel(new GridLayout(2, 2, 16, 16));
         optionsPanel.setOpaque(false);
-        optionButtons = new JButton[4];
+        optionButtons = new QuizOptionButton[4];
 
         for (int i = 0; i < 4; i++) {
             final int optionIndex = i;
-            JButton btn = new JButton();
-            btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            btn.setBackground(COLOR_DEFAULT_BTN);
-            btn.setForeground(COLOR_TEXT_DARK);
-            btn.setFocusPainted(false);
-            btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            btn.setHorizontalAlignment(SwingConstants.LEFT);
-            btn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(COLOR_DEFAULT_BORDER, 1, true),
-                    new EmptyBorder(12, 16, 12, 16)
-            ));
-
-            btn.addActionListener(e -> handleOptionSelected(optionIndex));
+            QuizOptionButton btn = new QuizOptionButton();
+            btn.addActionListener(e -> {
+                if (isAnsweringAllowed) {
+                    handleOptionSelected(optionIndex);
+                }
+            });
             optionButtons[i] = btn;
             optionsPanel.add(btn);
         }
         contentCard.add(optionsPanel, BorderLayout.CENTER);
 
-        // Feedback Label at bottom of card
+        // Feedback Label
         feedbackLabel = new JLabel("Choose an option to answer", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        feedbackLabel.setForeground(new Color(100, 116, 139));
+        feedbackLabel.setForeground(new Color(108, 117, 125));
         feedbackLabel.setPreferredSize(new Dimension(300, 30));
         contentCard.add(feedbackLabel, BorderLayout.SOUTH);
 
-        // Warning Panel when fewer than 4 cards are present
+        // Warning Panel
         warningPanel = new JPanel(new GridBagLayout());
         warningPanel.setOpaque(false);
-        JLabel warnMsg = new JLabel("<html><center><h2>At least 4 vocabulary cards are required to play Quiz Mode.</h2><p>Please switch to the <b>Vocabulary List</b> tab and add more words.</p></center></html>", SwingConstants.CENTER);
-        warnMsg.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        warnMsg.setForeground(new Color(100, 116, 139));
+        JLabel warnMsg = new JLabel("<html><center><h3>At least 4 vocabulary cards are required to play Quiz Mode.</h3><p>Please switch to the Vocabulary List tab and add more words.</p></center></html>", SwingConstants.CENTER);
+        warnMsg.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        warnMsg.setForeground(new Color(108, 117, 125));
         warningPanel.add(warnMsg);
 
         add(contentCard, BorderLayout.CENTER);
     }
 
-    /**
-     * Resets and loads a fresh question or shows warning if fewer than 4 cards exist.
-     */
     public void reloadQuiz() {
         if (transitionTimer != null && transitionTimer.isRunning()) {
             transitionTimer.stop();
@@ -171,6 +163,8 @@ public class QuizPanel extends JPanel {
     }
 
     private void loadNextQuestion() {
+        isAnsweringAllowed = true;
+
         if (manager.getCards().size() < 4) {
             remove(contentCard);
             add(warningPanel, BorderLayout.CENTER);
@@ -188,35 +182,24 @@ public class QuizPanel extends JPanel {
         if (currentQuestion == null) return;
 
         promptLabel.setText(currentQuestion.getTargetCard().getTerm());
-        feedbackLabel.setText("Select the best definition from options A–D");
-        feedbackLabel.setForeground(new Color(100, 116, 139));
+        feedbackLabel.setText("Select the best definition from options A-D");
+        feedbackLabel.setForeground(new Color(108, 117, 125));
 
         char[] letters = {'A', 'B', 'C', 'D'};
         List<Flashcard> options = currentQuestion.getOptions();
 
         for (int i = 0; i < 4; i++) {
-            JButton btn = optionButtons[i];
-            btn.setEnabled(true);
-            btn.setBackground(COLOR_DEFAULT_BTN);
-            btn.setForeground(COLOR_TEXT_DARK);
-            btn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(COLOR_DEFAULT_BORDER, 1, true),
-                    new EmptyBorder(12, 16, 12, 16)
-            ));
-
+            QuizOptionButton btn = optionButtons[i];
+            btn.resetDefault();
             String def = options.get(i).getDefinition();
-            btn.setText("<html><b>" + letters[i] + ".</b> " + def + "</html>");
+            btn.setText("<html><b style='font-size:14px;'>" + letters[i] + ".</b> " + def + "</html>");
         }
     }
 
     private void handleOptionSelected(int selectedIndex) {
-        if (currentQuestion == null) return;
+        if (currentQuestion == null || !isAnsweringAllowed) return;
 
-        // Disable all buttons immediately to prevent multiple clicks
-        for (JButton btn : optionButtons) {
-            btn.setEnabled(false);
-        }
-
+        isAnsweringAllowed = false; // Lock answers during feedback delay
         int correctIndex = currentQuestion.getCorrectOptionIndex();
         boolean isCorrect = (selectedIndex == correctIndex);
         totalAnswered++;
@@ -224,47 +207,26 @@ public class QuizPanel extends JPanel {
         // Update Spaced Repetition logic
         manager.recordReview(currentQuestion.getTargetCard(), isCorrect);
 
-        // Visual coloring
+        // Visual coloring with high-contrast feedback
         if (isCorrect) {
             correctCount++;
             currentStreak++;
-            JButton correctBtn = optionButtons[selectedIndex];
-            correctBtn.setBackground(COLOR_CORRECT);
-            correctBtn.setForeground(Color.WHITE);
-            correctBtn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(COLOR_CORRECT.darker(), 2, true),
-                    new EmptyBorder(12, 16, 12, 16)
-            ));
+            optionButtons[selectedIndex].setFeedbackColor(COLOR_CORRECT, Color.WHITE);
 
-            feedbackLabel.setText("✔ Correct! Promoted to " + currentQuestion.getTargetCard().getLevelLabel() + " (Level " + currentQuestion.getTargetCard().getLevel() + ")");
+            feedbackLabel.setText("Correct! Promoted to " + currentQuestion.getTargetCard().getLevelLabel() + " (Level " + currentQuestion.getTargetCard().getLevel() + ")");
             feedbackLabel.setForeground(COLOR_CORRECT);
         } else {
             currentStreak = 0;
-            // Highlight selected incorrect button
-            JButton wrongBtn = optionButtons[selectedIndex];
-            wrongBtn.setBackground(COLOR_INCORRECT);
-            wrongBtn.setForeground(Color.WHITE);
-            wrongBtn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(COLOR_INCORRECT.darker(), 2, true),
-                    new EmptyBorder(12, 16, 12, 16)
-            ));
-
-            // Highlight the actual correct button in green
-            JButton rightBtn = optionButtons[correctIndex];
-            rightBtn.setBackground(COLOR_CORRECT);
-            rightBtn.setForeground(Color.WHITE);
-            rightBtn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(COLOR_CORRECT.darker(), 2, true),
-                    new EmptyBorder(12, 16, 12, 16)
-            ));
+            optionButtons[selectedIndex].setFeedbackColor(COLOR_INCORRECT, Color.WHITE);
+            optionButtons[correctIndex].setFeedbackColor(COLOR_CORRECT, Color.WHITE);
 
             char correctLetter = (char) ('A' + correctIndex);
-            feedbackLabel.setText("✗ Incorrect! Correct was " + correctLetter + ". Reset to Learning (Level 1)");
+            feedbackLabel.setText("Incorrect! Correct was: " + correctLetter + ". Reset to Learning (Level 1)");
             feedbackLabel.setForeground(COLOR_INCORRECT);
         }
 
         // Update Stats Bar
-        streakLabel.setText("Streak: " + currentStreak + " 🔥");
+        streakLabel.setText("Streak: " + currentStreak);
         int percent = totalAnswered > 0 ? (int) Math.round(((double) correctCount / totalAnswered) * 100) : 0;
         scoreLabel.setText(String.format("Score: %d / %d (%d%%)", correctCount, totalAnswered, percent));
 
@@ -278,5 +240,64 @@ public class QuizPanel extends JPanel {
         });
         transitionTimer.setRepeats(false);
         transitionTimer.start();
+    }
+
+    /**
+     * Dedicated option button guaranteeing crisp background rendering
+     * and high contrast across all states.
+     */
+    private static class QuizOptionButton extends JButton {
+        private static final long serialVersionUID = 1L;
+
+        private Color currentBg;
+        private Color currentBorder;
+
+        public QuizOptionButton() {
+            setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            setHorizontalAlignment(SwingConstants.LEFT);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+            setOpaque(false);
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+            setBorder(new EmptyBorder(12, 16, 12, 16));
+            resetDefault();
+        }
+
+        public void resetDefault() {
+            this.currentBg = COLOR_DEFAULT_BTN;
+            this.currentBorder = new Color(206, 212, 218);
+            setForeground(COLOR_TEXT_DARK);
+            repaint();
+        }
+
+        public void setFeedbackColor(Color bg, Color fg) {
+            this.currentBg = bg;
+            this.currentBorder = bg.darker();
+            setForeground(fg);
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Hover state only when in default unselected mode
+            if (currentBg.equals(COLOR_DEFAULT_BTN) && getModel().isRollover()) {
+                g2.setColor(new Color(233, 236, 239));
+            } else {
+                g2.setColor(currentBg);
+            }
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+
+            // Border
+            g2.setColor(currentBorder);
+            g2.setStroke(new BasicStroke(1.3f));
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+
+            g2.dispose();
+            super.paintComponent(g);
+        }
     }
 }

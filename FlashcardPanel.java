@@ -7,9 +7,8 @@ import java.util.List;
 
 /**
  * Flashcard practice panel.
- * Provides a clean interactive card that flips between Term (front)
- * and Definition + Example (back). Supports assessment buttons for
- * spaced repetition level adjustments.
+ * Displays interactive cards that flip between Term (front) and Definition + Example (back).
+ * Provides distinct, accessible assessment buttons for spaced repetition.
  */
 public class FlashcardPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -22,11 +21,20 @@ public class FlashcardPanel extends JPanel {
     // UI Components
     private CardViewPanel cardViewPanel;
     private JLabel progressLabel;
-    private JButton prevButton;
-    private JButton nextButton;
-    private JButton flipButton;
-    private JButton needReviewButton;
-    private JButton masteredButton;
+    private StyledButton prevButton;
+    private StyledButton nextButton;
+    private StyledButton flipButton;
+    private StyledButton needReviewButton;
+    private StyledButton masteredButton;
+
+    // Standard Palette
+    private static final Color COLOR_TEXT_DARK = new Color(33, 37, 41);   // #212529
+    private static final Color COLOR_GRAY_BG = new Color(240, 240, 240);   // #F0F0F0
+    private static final Color COLOR_FLIP_BG = new Color(73, 80, 87);     // #495057
+    private static final Color COLOR_GREEN = new Color(25, 135, 84);      // #198754
+    private static final Color COLOR_RED = new Color(220, 53, 69);        // #DC3545
+
+    private static final Font FONT_BODY_BOLD = new Font("Segoe UI", Font.BOLD, 14);
 
     public FlashcardPanel(FlashcardManager manager) {
         this.manager = manager;
@@ -47,11 +55,11 @@ public class FlashcardPanel extends JPanel {
 
         progressLabel = new JLabel("Card 0 of 0", SwingConstants.CENTER);
         progressLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        progressLabel.setForeground(new Color(70, 80, 95));
+        progressLabel.setForeground(COLOR_TEXT_DARK);
 
         JLabel hintLabel = new JLabel("Tip: Click card or use 'Flip Card' to toggle front/back", SwingConstants.CENTER);
-        hintLabel.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        hintLabel.setForeground(new Color(130, 140, 155));
+        hintLabel.setFont(new Font("Segoe UI", Font.ITALIC, 13));
+        hintLabel.setForeground(new Color(108, 117, 125));
 
         topBar.add(progressLabel, BorderLayout.NORTH);
         topBar.add(hintLabel, BorderLayout.SOUTH);
@@ -76,15 +84,14 @@ public class FlashcardPanel extends JPanel {
         JPanel navRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
         navRow.setOpaque(false);
 
-        prevButton = createStyledButton("◀ Previous", new Color(225, 230, 238), new Color(40, 50, 70));
+        prevButton = new StyledButton("Previous", COLOR_GRAY_BG, COLOR_TEXT_DARK, FONT_BODY_BOLD);
         prevButton.addActionListener(e -> navigatePrevious());
 
-        flipButton = createStyledButton("🔄 Flip Card", new Color(79, 70, 229), Color.WHITE);
-        flipButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        flipButton.setPreferredSize(new Dimension(140, 40));
+        flipButton = new StyledButton("Flip Card", COLOR_FLIP_BG, Color.WHITE, new Font("Segoe UI", Font.BOLD, 15));
+        flipButton.setPreferredSize(new Dimension(140, 42));
         flipButton.addActionListener(e -> flipCurrentCard());
 
-        nextButton = createStyledButton("Next ▶", new Color(225, 230, 238), new Color(40, 50, 70));
+        nextButton = new StyledButton("Next", COLOR_GRAY_BG, COLOR_TEXT_DARK, FONT_BODY_BOLD);
         nextButton.addActionListener(e -> navigateNext());
 
         navRow.add(prevButton);
@@ -95,15 +102,13 @@ public class FlashcardPanel extends JPanel {
         JPanel assessmentRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         assessmentRow.setOpaque(false);
 
-        needReviewButton = createStyledButton("⚠ Need Review (Reset Level)", new Color(239, 68, 68), Color.WHITE);
-        needReviewButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        needReviewButton.setPreferredSize(new Dimension(210, 42));
+        needReviewButton = new StyledButton("Need Review", COLOR_RED, Color.WHITE, FONT_BODY_BOLD);
+        needReviewButton.setPreferredSize(new Dimension(190, 42));
         needReviewButton.setToolTipText("Marks this card as needing review and resets its level to 1");
         needReviewButton.addActionListener(e -> recordAssessment(false));
 
-        masteredButton = createStyledButton("✔ Mastered (Promote Level)", new Color(34, 197, 94), Color.WHITE);
-        masteredButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        masteredButton.setPreferredSize(new Dimension(210, 42));
+        masteredButton = new StyledButton("Mastered", COLOR_GREEN, Color.WHITE, FONT_BODY_BOLD);
+        masteredButton.setPreferredSize(new Dimension(190, 42));
         masteredButton.setToolTipText("Advances this card to the next mastery level");
         masteredButton.addActionListener(e -> recordAssessment(true));
 
@@ -113,20 +118,6 @@ public class FlashcardPanel extends JPanel {
         bottomPanel.add(navRow, BorderLayout.NORTH);
         bottomPanel.add(assessmentRow, BorderLayout.SOUTH);
         add(bottomPanel, BorderLayout.SOUTH);
-    }
-
-    private JButton createStyledButton(String text, Color bg, Color fg) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        button.setBackground(bg);
-        button.setForeground(fg);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(bg.darker(), 1, true),
-                new EmptyBorder(8, 16, 8, 16)
-        ));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return button;
     }
 
     public void reloadCards() {
@@ -186,7 +177,6 @@ public class FlashcardPanel extends JPanel {
         Flashcard current = cards.get(currentIndex);
         manager.recordReview(current, correct);
 
-        // Automatically flip back and advance to next card
         isFlipped = false;
         if (!cards.isEmpty()) {
             currentIndex = (currentIndex + 1) % cards.size();
@@ -195,8 +185,7 @@ public class FlashcardPanel extends JPanel {
     }
 
     /**
-     * Custom panel that renders a modern physical-looking card
-     * with rounded borders and responsive content wrapping.
+     * Custom panel rendering a clean, physical card aesthetic.
      */
     private static class CardViewPanel extends JPanel {
         private static final long serialVersionUID = 1L;
@@ -211,26 +200,22 @@ public class FlashcardPanel extends JPanel {
             setBorder(new EmptyBorder(30, 40, 30, 40));
             setOpaque(false);
 
-            // Side Indicator (FRONT vs BACK)
-            sideIndicator = new JLabel("FRONT", SwingConstants.CENTER);
-            sideIndicator.setFont(new Font("Segoe UI", Font.BOLD, 12));
-            sideIndicator.setForeground(new Color(120, 130, 145));
+            sideIndicator = new JLabel("FRONT - TERM", SwingConstants.CENTER);
+            sideIndicator.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            sideIndicator.setForeground(new Color(108, 117, 125));
 
-            // Primary display (Term on front, Definition on back)
             primaryLabel = new JLabel("", SwingConstants.CENTER);
-            primaryLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-            primaryLabel.setForeground(new Color(30, 41, 59));
+            primaryLabel.setFont(new Font("Segoe UI", Font.BOLD, 30));
+            primaryLabel.setForeground(COLOR_TEXT_DARK);
 
-            // Secondary display (Example on back, or subtitle)
             secondaryLabel = new JLabel("", SwingConstants.CENTER);
             secondaryLabel.setFont(new Font("Segoe UI", Font.ITALIC, 16));
-            secondaryLabel.setForeground(new Color(71, 85, 105));
+            secondaryLabel.setForeground(new Color(73, 80, 87));
 
-            // Level Badge at bottom of card
             levelBadge = new JLabel("Level: Learning", SwingConstants.CENTER);
-            levelBadge.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            levelBadge.setFont(new Font("Segoe UI", Font.BOLD, 13));
             levelBadge.setOpaque(true);
-            levelBadge.setBorder(new EmptyBorder(4, 12, 4, 12));
+            levelBadge.setBorder(new EmptyBorder(5, 14, 5, 14));
 
             JPanel centerHolder = new JPanel();
             centerHolder.setLayout(new BoxLayout(centerHolder, BoxLayout.Y_AXIS));
@@ -255,7 +240,7 @@ public class FlashcardPanel extends JPanel {
         public void showEmptyState() {
             sideIndicator.setText("");
             primaryLabel.setText("No Flashcards");
-            secondaryLabel.setText("<html><center>Add new vocabulary words in the 'Vocabulary List' tab.</center></html>");
+            secondaryLabel.setText("<html><center>Add new vocabulary words in the Vocabulary List tab.</center></html>");
             levelBadge.setVisible(false);
             repaint();
         }
@@ -263,42 +248,40 @@ public class FlashcardPanel extends JPanel {
         public void renderCard(Flashcard card, boolean flipped) {
             levelBadge.setVisible(true);
 
-            // Badge color based on level
             Color badgeBg;
-            Color badgeFg = Color.WHITE;
             switch (card.getLevel()) {
                 case Flashcard.LEVEL_REVIEWING:
-                    badgeBg = new Color(59, 130, 246); // Blue
+                    badgeBg = new Color(13, 110, 253); // Blue
                     break;
                 case Flashcard.LEVEL_MASTERED:
-                    badgeBg = new Color(16, 185, 129); // Green
+                    badgeBg = new Color(25, 135, 84);  // Green
                     break;
                 case Flashcard.LEVEL_LEARNING:
                 default:
-                    badgeBg = new Color(245, 158, 11); // Amber
+                    badgeBg = new Color(217, 119, 6);  // Amber
                     break;
             }
             levelBadge.setBackground(badgeBg);
-            levelBadge.setForeground(badgeFg);
-            levelBadge.setText(" Mastery Level: " + card.getLevelLabel() + " (L" + card.getLevel() + ") ");
+            levelBadge.setForeground(Color.WHITE);
+            levelBadge.setText(" Mastery Level: " + card.getLevelLabel() + " (Level " + card.getLevel() + ") ");
 
             if (!flipped) {
-                // FRONT OF CARD
-                sideIndicator.setText("FRONT — TERM");
+                sideIndicator.setText("FRONT - TERM");
                 primaryLabel.setFont(new Font("Segoe UI", Font.BOLD, 30));
+                primaryLabel.setForeground(COLOR_TEXT_DARK);
                 primaryLabel.setText(card.getTerm());
-                secondaryLabel.setText("<html><center style='color:#64748B;'>(Click to reveal definition & example)</center></html>");
+                secondaryLabel.setText("<html><center style='color:#6C757D;'>(Click to reveal definition & example)</center></html>");
             } else {
-                // BACK OF CARD
-                sideIndicator.setText("BACK — DEFINITION & EXAMPLE");
+                sideIndicator.setText("BACK - DEFINITION & EXAMPLE");
                 primaryLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-                primaryLabel.setText("<html><center style='width: 450px; text-align: center; color:#1E293B;'>"
+                primaryLabel.setForeground(COLOR_TEXT_DARK);
+                primaryLabel.setText("<html><center style='width: 480px; text-align: center; color:#212529;'>"
                         + card.getDefinition() + "</center></html>");
 
                 String exText = card.getExample().isEmpty()
                         ? ""
                         : "Example: \"" + card.getExample() + "\"";
-                secondaryLabel.setText("<html><center style='width: 450px; text-align: center; color:#0284C7;'>"
+                secondaryLabel.setText("<html><center style='width: 480px; text-align: center; color:#0D6EFD; font-size:14px;'>"
                         + exText + "</center></html>");
             }
 
@@ -313,20 +296,90 @@ public class FlashcardPanel extends JPanel {
             int width = getWidth();
             int height = getHeight();
 
-            // Draw card shadow
-            g2.setColor(new Color(0, 0, 0, 25));
-            g2.fillRoundRect(8, 8, width - 16, height - 16, 24, 24);
+            // Card subtle shadow
+            g2.setColor(new Color(0, 0, 0, 20));
+            g2.fillRoundRect(6, 6, width - 12, height - 12, 20, 20);
 
-            // Draw card white body
+            // Card solid body
             g2.setColor(Color.WHITE);
-            g2.fillRoundRect(4, 4, width - 16, height - 16, 24, 24);
+            g2.fillRoundRect(3, 3, width - 12, height - 12, 20, 20);
 
-            // Draw card border
-            g2.setColor(new Color(226, 232, 240));
+            // Card border
+            g2.setColor(new Color(222, 226, 230));
             g2.setStroke(new BasicStroke(1.5f));
-            g2.drawRoundRect(4, 4, width - 16, height - 16, 24, 24);
+            g2.drawRoundRect(3, 3, width - 12, height - 12, 20, 20);
 
             g2.dispose();
+            super.paintComponent(g);
+        }
+    }
+
+    /**
+     * Reusable custom button that renders crisp, high-contrast colors
+     * reliably across any Look and Feel.
+     */
+    public static class StyledButton extends JButton {
+        private static final long serialVersionUID = 1L;
+
+        private Color normalBg;
+        private Color hoverBg;
+        private Color pressedBg;
+        private Color borderColor;
+
+        public StyledButton(String text, Color bg, Color fg, Font font) {
+            super(text);
+            initColors(bg, fg);
+
+            setFont(font);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+            setOpaque(false);
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+            setBorder(new EmptyBorder(8, 16, 8, 16));
+        }
+
+        private void initColors(Color bg, Color fg) {
+            this.normalBg = bg;
+            this.hoverBg = computeHover(bg);
+            this.pressedBg = bg.darker();
+            this.borderColor = bg.equals(COLOR_GRAY_BG) ? new Color(206, 212, 218) : bg.darker();
+            setForeground(fg);
+        }
+
+        private static Color computeHover(Color c) {
+            int r = Math.min(255, c.getRed() + 20);
+            int g = Math.min(255, c.getGreen() + 20);
+            int b = Math.min(255, c.getBlue() + 20);
+            return new Color(r, g, b);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            if (!isEnabled()) {
+                g2.setColor(new Color(233, 236, 239));
+            } else if (getModel().isPressed()) {
+                g2.setColor(pressedBg);
+            } else if (getModel().isRollover()) {
+                g2.setColor(hoverBg);
+            } else {
+                g2.setColor(normalBg);
+            }
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 6, 6);
+
+            // Border
+            if (!isEnabled()) {
+                g2.setColor(new Color(206, 212, 218));
+            } else {
+                g2.setColor(borderColor);
+            }
+            g2.setStroke(new BasicStroke(1.2f));
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
+            g2.dispose();
+
             super.paintComponent(g);
         }
     }
