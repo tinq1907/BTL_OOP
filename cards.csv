@@ -1,5 +1,101 @@
 id,term,definition,example,level
-1,ephemeral,lasting for a very short time; transitory,Fame in the fast-paced digital era is often ephemeral.,3
-2,serendipity,the occurrence of events by chance in a happy or beneficial way,Finding my favorite rare book at a small garage sale was pure serendipity.,3
-3,resilient,able to withstand or recover quickly from difficult conditions,The local economy proved remarkably resilient following the unexpected downturn.,3
-4,eloquent,fluent or persuasive in speaking or writing,Her eloquent defense of human rights earned a standing ovation from the audience.,3
+1,apple,a round fruit with red or green skin and firm white flesh,I eat a fresh apple every morning.,3
+2,book,a set of printed pages bound together,She is reading an interesting history book.,1
+3,cat,a small domesticated carnivorous mammal with soft fur,The cat is sleeping peacefully on the sofa.,1
+4,dog,a domesticated carnivorous mammal that typically has a long snout and barking voice,He walks his dog in the park every evening.,1
+5,water,"a colorless, transparent, odorless liquid that forms the seas and lakes",Drink plenty of water after exercising.,1
+6,sun,the star around which the earth orbits,The sun rises brightly in the east.,1
+7,moon,the natural satellite of the earth,The full moon lights up the night sky.,1
+8,tree,a woody perennial plant having a single stem or trunk,Birds are singing in the tall tree.,1
+9,house,a building for human habitation,They bought a cozy house near the lake.,1
+10,car,"a road vehicle, typically with four wheels, powered by an internal combustion engine",He drives his car to work every day.,1
+11,friend,a person whom one knows and with whom one has a bond of mutual affection,A good friend will always support you.,2
+12,family,a group of one or more parents and their children living together as a unit,Spending quality time with family is essential.,2
+13,school,an institution for educating children,The students walk together to school.,1
+14,teacher,"a person who teaches, especially in a school",Our English teacher explains grammar very clearly.,2
+15,student,a person who is studying at a school or college,Every student must complete their homework.,1
+16,pen,an instrument for writing or drawing with ink,Can I borrow your black pen?,1
+17,pencil,"an instrument for writing or drawing, consisting of a thin stick of graphite",He drew a detailed sketch with a pencil.,1
+18,table,a piece of furniture with a flat top and one or more legs,We placed the dinner plates on the wooden table.,1
+19,chair,"a separate seat for one person, typically with a back and four legs",Please take a comfortable chair and sit down.,1
+20,computer,an electronic device for storing and processing data,Modern computers can process massive amounts of information.,2
+21,phone,a device used to talk to people over long distances,She answered a call on her mobile phone.,1
+22,music,vocal or instrumental sounds combined in such a way as to produce beauty of form,Listening to classical music helps me focus.,2
+23,movie,a story or event recorded by a camera as a set of moving images,We watched an exciting action movie last night.,1
+24,food,any nutritious substance that people or animals eat or drink,Vietnamese street food is famous worldwide.,1
+25,bread,"food made of flour, water, and yeast mixed and baked",He toasted two slices of bread for breakfast.,1
+26,milk,an opaque white fluid rich in fat and protein secreted by female mammals,Children should drink fresh milk daily.,1
+27,coffee,a hot drink made from the roasted and ground seeds of a tropical shrub,I need a cup of strong black coffee to stay awake.,2
+28,tea,"a hot drink made by infusing dried, crushed leaves of the tea plant in boiling water",Green tea contains many healthy antioxidants.,1
+29,city,a large town,Tokyo is one of the most populous cities in the world.,2
+30,village,"a group of houses and associated buildings, larger than a hamlet and smaller than a town",He grew up in a quiet farming village.,2
+31,river,a large natural stream of water flowing in a channel to the sea,The boat sailed slowly down the peaceful river.,2
+32,mountain,a large natural elevation of the earth's surface rising abruptly from the surrounding level,They climbed the steep mountain during summer vacation.,2
+33,sea,the expanse of salt water that covers most of the earth's surface,We spent the weekend swimming in the cool sea.,1
+34,sky,the region of the atmosphere and outer space seen from the earth,Fluffy white clouds floated across the blue sky.,1
+35,rain,moisture condensed from the atmosphere that falls visibly in separate drops,Heavy rain caused temporary flooding in the streets.,1
+36,snow,atmospheric water vapor frozen into ice crystals and falling in light white flakes,The children built a snowman in the fresh snow.,2
+37,wind,the perceptible natural movement of the air,A gentle autumn wind blew through the trees.,2
+38,flower,"the seed-bearing part of a plant, consisting of reproductive organs",She received a beautiful bouquet of red flowers.,1
+39,garden,"a piece of ground adjoining a house, used for growing flowers, fruit, or vegetables",He enjoys tending his vegetable garden on weekends.,2
+40,bird,"a warm-blooded egg-laying vertebrate characterized by the possession of feathers, wings, and a beak",A tiny bird built a nest outside my window.,1
+41,fish,a limbless cold-blooded vertebrate animal with gills and fins and living wholly in water,Goldfish swim gracefully in the aquarium.,1
+42,road,"a wide way leading from one place to another, especially one with a specially prepared surface",The winding road led directly to the mountain summit.,1
+43,door,"a hinged, sliding, or revolving barrier at the entrance to a building, room, or vehicle",Please close the front door when you leave.,1
+44,window,an opening in the wall or roof of a building or vehicle that is fitted with glass,Open the window to let fresh air into the room.,2
+45,clock,a mechanical or electrical device for measuring time,The old wall clock chimed precisely at midnight.,1
+46,watch,a small timepiece worn typically on a strap on one's wrist,He glanced at his wristwatch to check the time.,2
+47,money,a current medium of exchange in the form of coins and banknotes,Save a portion of your money every month.,2
+48,market,"a regular gathering of people for the purchase and sale of provisions, livestock, and other commodities",Fresh vegetables are sold at the local morning market.,2
+49,shop,a building or part of a building where goods or services are sold,She visited a nearby bakery shop to buy cakes.,1
+50,hospital,an institution providing medical and surgical treatment and nursing care for sick or injured people,Doctors and nurses worked tirelessly in the hospital.,2
+51,doctor,a qualified practitioner of medicine,You should consult a doctor if your symptoms persist.,2
+52,nurse,"a person trained to care for the sick or infirm, especially in a hospital",The kind nurse checked the patient's blood pressure.,2
+53,police,"the civil force of a state, responsible for the prevention and detection of crime",Call the police immediately in case of an emergency.,2
+54,fire,"combustion or burning, in which substances combine chemically with oxygen",Campers gathered closely around the warm fire.,1
+55,earth,the planet on which we live,We must protect the earth for future generations.,2
+56,star,"a fixed luminous point in the night sky that is a large, remote incandescent body like the sun",Millions of bright stars illuminated the clear dark sky.,1
+57,cloud,a visible mass of condensed water vapor floating in the atmosphere,Dark storm clouds gathered on the distant horizon.,1
+58,beach,"a pebbly or sandy shore, especially by the ocean between high- and low-water marks",Walking barefoot along the sandy beach is very relaxing.,2
+59,forest,a large area covered chiefly with trees and undergrowth,Many wild animals live protected inside the deep forest.,2
+60,island,a piece of land surrounded by water,They took a ferry ride to visit the tropical island.,2
+61,bridge,"a structure carrying a road, path, railway, or canal across a river, ravine, or other obstacle",A magnificent suspension bridge connects the two cities.,2
+62,train,a series of railroad cars moved as a unit by a locomotive or by integral motors,The high-speed train arrived exactly on schedule.,1
+63,plane,an aircraft powered by an engine and having fixed wings,The passenger plane landed smoothly on the runway.,2
+64,ship,a large boat for transporting people or goods by sea,A cargo ship transported containers across the ocean.,2
+65,bicycle,"a vehicle composed of two wheels held in a frame one behind the other, propelled by pedals",Riding a bicycle is an eco-friendly way to commute.,2
+66,happy,feeling or showing pleasure or contentment,The children looked very happy opening their birthday presents.,1
+67,sad,feeling or showing sorrow; unhappy,He felt sad after saying goodbye to his closest friends.,1
+68,brave,ready to face and endure danger or pain; showing courage,The brave firefighter rescued the trapped kitten.,3
+69,clever,"quick to understand, learn, and devise or apply ideas; intelligent",She devised a clever solution to solve the math puzzle.,3
+70,strong,having the power to move heavy weights or perform other physically demanding tasks,Regular exercise makes your muscles lean and strong.,2
+71,weak,lacking physical strength and energy,He felt weak and dizzy after running the marathon.,2
+72,fast,moving or capable of moving at high speed,Cheetahs are famous for being the fastest land animals.,1
+73,slow,"moving or operating, or designed to work, at a low speed",Snails are known for their slow and steady movement.,1
+74,hot,having a high degree of heat or a high temperature,Be careful because the soup is extremely hot.,1
+75,cold,of or at a low or relatively low temperature,Wear a thick coat during the cold winter days.,1
+76,warm,of or at a fairly or comfortably high temperature,The sunshine felt pleasantly warm on her face.,1
+77,cool,of or at a fairly low temperature,Enjoy a cool breeze on a hot summer evening.,1
+78,clean,"free from dirt, marks, or stains",Keep your study desk clean and well organized.,1
+79,dirty,covered or marked with an unclean substance,Wash your dirty hands thoroughly with soap.,1
+80,bright,giving out or reflecting a lot of light; shining,The living room is bright and full of natural sunlight.,2
+81,dark,with little or no light,It is dangerous to walk alone along a dark alley.,1
+82,quiet,making little or no noise,The library is an ideal quiet place to study.,2
+83,loud,producing or capable of producing much noise; easily audible,The sudden loud thunder startled everyone in the room.,2
+84,easy,achieved without great effort; presenting few difficulties,This beginners guide provides easy step-by-step instructions.,1
+85,hard,"solid, firm, and rigid; not easily broken, bent, or pierced; difficult",Learning a completely new language takes hard work.,2
+86,kind,"having or showing a friendly, generous, and considerate nature",She is always kind and helpful toward elderly neighbors.,2
+87,honest,free of deceit and untruthfulness; sincere,An honest confession is the first step toward forgiveness.,3
+88,polite,having or showing behavior that is respectful and considerate of other people,It is polite to say thank you when receiving help.,3
+89,patient,"able to accept or tolerate delays, problems, or suffering without becoming annoyed",A good teacher is always patient with slow learners.,3
+90,curious,eager to know or learn something,Young children are naturally curious about the world around them.,3
+91,simple,easily understood or done; presenting no difficulty,The recipe consists of four simple ingredients.,1
+92,rich,having a great deal of money or assets; wealthy,The region is rich in mineral and agricultural resources.,2
+93,poor,lacking sufficient money to live at a standard considered comfortable,Charities provide essential aid to poor families.,2
+94,young,having lived or existed for only a short time,The young athlete broke two national records this year.,1
+95,old,having lived for a long time; no longer young,The old oak tree has stood in the village for centuries.,1
+96,new,"produced, introduced, or discovered recently or now for the first time",She bought a brand new laptop for her college courses.,1
+97,listen,give one's attention to a sound,Listen carefully to the instructions before starting the exam.,1
+98,speak,"say something in order to convey information, an opinion, or a feeling",He can speak three foreign languages fluently.,2
+99,read,look at and comprehend the meaning of written or printed matter,I try to read at least twenty pages before bedtime.,1
+100,write,"mark on paper with a pen, pencil, or other implement, to convey words",Please write your full name at the top of the exam paper.,1
