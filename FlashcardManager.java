@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * Business logic and data management layer for Flashcards.
  * Handles in-memory storage, CRUD operations, quiz option generation,
- * Spaced Repetition progression, and CSV file persistence.
+ * Spaced Repetition progression, metrics calculation, and CSV file persistence.
  */
 public class FlashcardManager {
     public static final String DEFAULT_FILE_NAME = "cards.csv";
@@ -136,6 +136,58 @@ public class FlashcardManager {
             }
         }
         return results;
+    }
+
+    /**
+     * Summary Metrics for Dashboard Strips.
+     */
+    public synchronized int getTotalCount() {
+        return cards.size();
+    }
+
+    public synchronized int getMasteredCount() {
+        int count = 0;
+        for (Flashcard card : cards) {
+            if (card.getLevel() == Flashcard.LEVEL_MASTERED) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public synchronized int getNeedReviewCount() {
+        int count = 0;
+        for (Flashcard card : cards) {
+            if (card.getLevel() < Flashcard.LEVEL_MASTERED) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public synchronized int getLearningCount() {
+        int count = 0;
+        for (Flashcard card : cards) {
+            if (card.getLevel() == Flashcard.LEVEL_LEARNING) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public synchronized int getReviewingCount() {
+        int count = 0;
+        for (Flashcard card : cards) {
+            if (card.getLevel() == Flashcard.LEVEL_REVIEWING) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public synchronized int getMasteryPercentage() {
+        if (cards.isEmpty()) return 0;
+        return (int) Math.round(((double) getMasteredCount() / cards.size()) * 100.0);
     }
 
     /**
